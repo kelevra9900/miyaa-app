@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "892248469024",
+    "project_id": "miyaa-62d2d",
+    "storage_bucket": "miyaa-62d2d.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:892248469024:android:ce0e82778d107e7f5c1645",
+        "android_client_info": {
+          "package_name": "com.miyaa.sissa"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC59d-MeVfRYa19J7u-GyMwvIQ3gyknaHs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

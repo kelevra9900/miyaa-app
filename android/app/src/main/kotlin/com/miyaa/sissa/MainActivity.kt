@@ -1,4 +1,4 @@
-package com.example.miyaa
+package com.miyaa.sissa
 
 import io.flutter.embedding.android.FlutterActivity
 

@@ -1,22 +1,31 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_flavor/flutter_flavor.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'app.dart';
+import 'common/secure_storage.dart';
 
-void main() {
-  runApp(const MyApp());
-}
+import 'common/firebase/firebase_options.dart';
+import 'common/user_preferences.dart';
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
-  // This widget is the root of your application.
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
-      ),
-      // home: const MyHomePage(title: 'Flutter Demo Home Page'),
-    );
-  }
+Future<void> main() async {
+  FlavorConfig(
+    name: "DEV",
+    variables: {
+      "baseUrl": "https://backstaging.doctorsnet.mx",
+      "timeOtp": 300,
+    },
+  );
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+  await prefs.initPrefs();
+  await secureStorage.initStorage();
+  SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+    DeviceOrientation.portraitDown,
+  ]);
+  runApp(const ProviderScope(child: App()));
 }
