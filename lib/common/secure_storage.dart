@@ -50,6 +50,22 @@ class SecureStorage {
   Future<void> setTokenNotification(String value) async {
     await _storage.write(key: 'tokenNotification', value: value);
   }
+
+  Future<String?> get refreshToken async {
+    return await _storage.read(key: 'refreshToken') ?? "";
+  }
+
+  Future<void> setRefreshToken(String value) async {
+    await _storage.write(key: 'refreshToken', value: value);
+  }
+
+  Future<void> flushData() async {
+    await _storage.delete(key: 'jwt');
+    await _storage.delete(key: 'refreshToken');
+    await _storage.delete(key: 'userData');
+    await _storage.delete(key: 'tokenNotification');
+    await setIsLoggedIn(false);
+  }
 }
 
 final SecureStorage secureStorage = SecureStorage();

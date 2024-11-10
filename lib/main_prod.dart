@@ -3,10 +3,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_flavor/flutter_flavor.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:miyaa/common/secure_storage.dart';
 
 import 'app.dart';
 import 'common/firebase/firebase_options.dart';
 import 'common/user_preferences.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'dart:developer';
+
+Future<void> backgroundMessageHandler(RemoteMessage message) async {
+  await Firebase.initializeApp();
+  log("Background message received: ${message.messageId}");
+}
 
 Future<void> main() async {
   FlavorConfig(
@@ -21,9 +29,15 @@ Future<void> main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
   await prefs.initPrefs();
+  await secureStorage.initStorage();
+
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
   ]);
+
+  // Registra el manejador de mensajes en segundo plano
+  FirebaseMessaging.onBackgroundMessage(backgroundMessageHandler);
+
   runApp(const ProviderScope(child: App()));
 }

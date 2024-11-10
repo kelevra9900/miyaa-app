@@ -23,16 +23,16 @@ class App extends StatefulWidget {
 class _AppState extends State<App> {
   @override
   void initState() {
+    super.initState();
     Future.delayed(Duration.zero, () async {
       await getDeviceValues(context);
     });
-    super.initState();
   }
 
   Future<void> getDeviceValues(BuildContext context) async {
-    bool isFristRun = await IsFirstRun.isFirstRun();
-    prefs.isFirtsRun = isFristRun;
-    if (isFristRun) {
+    bool isFirstRun = await IsFirstRun.isFirstRun();
+    prefs.isFirtsRun = isFirstRun;
+    if (isFirstRun) {
       if (!context.mounted) return;
       Brightness brightness = MediaQuery.of(context).platformBrightness;
       prefs.isDarkMode = brightness == Brightness.dark ? true : false;
@@ -43,40 +43,34 @@ class _AppState extends State<App> {
   notificationsPush() async {
     FirebaseMessaging firebaseMessaging = FirebaseMessaging.instance;
     String? tokenNotification = await firebaseMessaging.getToken();
-    saveTokenNotitication(tokenNotification ?? "");
+    saveTokenNotification(tokenNotification ?? "");
+
     FirebaseMessaging.instance.getInitialMessage().then((message) {
       if (message != null) {
-        log(message.notification!.title.toString());
-        log(message.notification!.body.toString());
+        log(message.notification?.title ?? "No title");
+        log(message.notification?.body ?? "No body");
         localNotifications.showNotification(message, context);
       }
     });
 
     FirebaseMessaging.onMessage.listen((message) {
-      log(message.notification!.title.toString());
-      log(message.notification!.body.toString());
+      log(message.notification?.title ?? "No title");
+      log(message.notification?.body ?? "No body");
       localNotifications.showNotification(message, context);
     });
 
-    ///App abierta y en modo backgroud
     FirebaseMessaging.onMessageOpenedApp.listen((message) {
       handleNotification(message);
     });
-
-    /// App Cerrada
-    FirebaseMessaging.onBackgroundMessage((RemoteMessage message) async {
-      handleNotification(message);
-    });
   }
 
-  ///Redirección del app cerrada.
+  ///Redirección cuando la app está cerrada.
   void handleNotification(RemoteMessage message) {
-    log(message.toString());
+    log("Notification clicked: ${message.toString()}");
   }
 
-  void saveTokenNotitication(String token) async {
-    //TODO: CONFIGURAR EL GUARDADO DEL TOKEN
-    log("token notificaciones $token");
+  void saveTokenNotification(String token) async {
+    log("Token for notifications: $token");
     secureStorage.setTokenNotification(token);
   }
 
