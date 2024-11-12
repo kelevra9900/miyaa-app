@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:miyaa/common/secure_storage.dart';
 // import 'package:miyaa/common/secure_storage.dart';
 import 'package:miyaa/tools/routes.dart';
 
@@ -23,17 +24,14 @@ class _SplashScreenState extends ConsumerState<SplashScreenPage> {
 
   void initData() async {
     await initUtils.getCurrentLocation(context);
-    // bool isLoggedIn = await secureStorage.isLoggedIn();
+    bool isLoggedIn = await secureStorage.isLoggedIn();
 
     if (!context.mounted) return;
-
-    // if (isLoggedIn) {
-    //   context.go(Routes.login);
-    // } else {
-    //   context.go(Routes.login);
-    // }
-
-    context.go(Routes.login);
+    if (isLoggedIn) {
+      context.go(Routes.dashboard);
+    } else {
+      context.go(Routes.login);
+    }
   }
 
   @override

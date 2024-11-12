@@ -28,6 +28,7 @@ dependencies:
   jwt_decoder: ^2.0.1
   responsive_builder: ^0.7.1
   shared_preferences: ^2.3.2
+  simple_ripple_animation: ^0.0.9
   theme_manager: ^2.0.4
 
 dev_dependencies:

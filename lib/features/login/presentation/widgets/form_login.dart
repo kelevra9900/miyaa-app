@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
+import 'package:miyaa/common/network/custom_catch_error.dart';
 import '../../../../common/custom_colors.dart';
 import '../../../../tools/routes.dart';
 import '../login_controller.dart';
@@ -126,12 +127,11 @@ class _FormLoginState extends State<FormLogin> {
         // }
 
         if (!context.mounted) return;
-        // onCredentialsSuccessful(context);
-        context.go(Routes.home);
+        context.go(Routes.dashboard);
         widget.pageController.setIsLoading(false);
       } catch (e) {
         widget.pageController.setIsLoading(false);
-        // customError.catchError(e: e, context: context);
+        customError.catchError(e: e, context: context);
       }
     }
   }

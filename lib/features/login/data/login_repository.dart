@@ -79,6 +79,26 @@ class LoginRepository {
       rethrow;
     }
   }
+
+  Future getUserData() async {
+    try {
+      final response = await httpService.get(
+        endpoint: '/users/me',
+      );
+
+      if (response.body != null) {
+        var decoded = json.decode(response.body!);
+        log('Response getUserData: $decoded');
+        return decoded;
+      } else {
+        log('Response body is null');
+        throw Exception('Failed to get user data');
+      }
+    } catch (e) {
+      log('Error to get user data on repository ========: $e');
+      rethrow;
+    }
+  }
 }
 
 final loginRepositoryProvider = Provider<LoginRepository>(

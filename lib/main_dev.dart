@@ -20,7 +20,7 @@ Future<void> main() async {
   FlavorConfig(
     name: "PROD",
     variables: {
-      "baseUrl": "http://10.0.2.2:1337",
+      "baseUrl": "http://10.0.2.2:3000",
       "timeOtp": 60,
     },
   );
