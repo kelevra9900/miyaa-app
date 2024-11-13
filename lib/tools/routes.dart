@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:miyaa/features/dashboard/chat/screens/chat_message.dart';
+import 'package:miyaa/features/login/domain/user.dart';
+import 'package:miyaa/features/notifications/presentation/home_notifications/home_notifications_page.dart';
+
+import '../features/dashboard/chat/presentation/chat_page.dart';
 import '../features/dashboard/dashboard/dashboard_page.dart';
 import '../features/dashboard/home/presentation/home_page.dart';
 import '../features/init/presentation/loading/loading_page.dart';
-
 import '../features/init/presentation/splash_screen/splash_page.dart';
 import '../features/login/presentation/login_page.dart';
 
@@ -13,6 +17,12 @@ class Routes {
   static const String loading = '/loading';
   static const String home = '/home';
   static const String dashboard = '/dashboard';
+  static const String chat = '/chat';
+  static const String chatRoom = 'chat/:id';
+  static const String conversation = '/conversation';
+  static const String profile = '/profile';
+  static const String notifications = '/notifications';
+  static const String settings = '/settings';
 }
 
 final router = GoRouter(initialLocation: Routes.splash, routes: [
@@ -49,6 +59,39 @@ final router = GoRouter(initialLocation: Routes.splash, routes: [
     pageBuilder: (context, state) => page(
       state: state,
       child: const DashboardPage(),
+    ),
+  ),
+  GoRoute(
+    path: Routes.chat,
+    pageBuilder: (context, state) => page(
+      state: state,
+      child: const ChatPage(),
+    ),
+    routes: [
+      GoRoute(
+        path: Routes.chatRoom,
+        builder: (BuildContext context, GoRouterState state) {
+          return ChatMessages(
+            chatId: state.pathParameters['id'] as String,
+            user: state.extra as User,
+          );
+        },
+        name: 'chatRoom',
+      ),
+    ],
+  ),
+  GoRoute(
+    path: Routes.notifications,
+    pageBuilder: (context, state) => page(
+      state: state,
+      child: const HomeNotificationsPage(),
+    ),
+  ),
+  GoRoute(
+    path: Routes.settings,
+    pageBuilder: (context, state) => page(
+      state: state,
+      child: const HomePage(),
     ),
   ),
 ]);

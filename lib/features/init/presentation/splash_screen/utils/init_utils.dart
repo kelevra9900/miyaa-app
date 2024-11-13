@@ -10,9 +10,12 @@ import 'package:miyaa/common/secure_storage.dart';
 import 'package:miyaa/tools/custom_dialogs.dart';
 import 'package:miyaa/tools/models/modal_dynamic_data.dart';
 import 'package:miyaa/tools/routes.dart';
+import '../../../../../common/network/socket_manager.dart';
 import '../../../../../common/user_preferences.dart';
 
 class InitUtils {
+  Timer? _locationTimer;
+
   goToNextPage({required BuildContext context}) {
     Timer(const Duration(seconds: 1), () async {
       bool isLoggedIn = await secureStorage.isLoggedIn();
@@ -87,6 +90,42 @@ class InitUtils {
     prefs.longitude = position.longitude.toString();
     log("latitude: ${prefs.latitude}");
     log("longitude: ${prefs.longitude}");
+  }
+
+  Future<void> setTrackingLocation() async {
+    const settings = LocationSettings(
+      accuracy: LocationAccuracy.high,
+      distanceFilter: 10,
+    );
+
+    Geolocator.getPositionStream(locationSettings: settings).listen((pos) {
+      log("new location ======= ${pos.latitude}, ${pos.longitude}");
+      SocketManager().emit('new_location', {
+        'latitude': pos.latitude,
+        'longitude': pos.longitude,
+      });
+      if (_locationTimer == null || !_locationTimer!.isActive) {
+        _startLocationTimer(pos.latitude, pos.longitude);
+      }
+    });
+  }
+
+  void _startLocationTimer(double latitude, double longitude) {
+    _locationTimer = Timer.periodic(const Duration(seconds: 10), (timer) {
+      log('Location updated: $latitude, $longitude');
+      saveLocationHistorically(latitude, longitude);
+    });
+  }
+
+  Future<void> saveLocationHistorically(
+    double latitude,
+    double longitude,
+  ) async {
+    SocketManager().emit('save_location', {
+      'latitude': latitude,
+      'longitude': longitude,
+    });
+    log('Location saved historically: $latitude, $longitude');
   }
 }
 

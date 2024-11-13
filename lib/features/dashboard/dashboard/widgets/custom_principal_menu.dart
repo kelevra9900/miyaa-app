@@ -50,19 +50,13 @@ class CustomPrincipalMenu extends StatelessWidget {
             controller: controller,
             state: state,
             idScreen: 1,
-            pathIcon: icons.calendar,
+            pathIcon: icons.chat,
           ),
           NavigatorBarButton(
             controller: controller,
             state: state,
             idScreen: 2,
             pathIcon: icons.noteList,
-          ),
-          NavigatorBarButton(
-            controller: controller,
-            state: state,
-            idScreen: 4,
-            pathIcon: icons.telemedicine,
           ),
           NavigatorBarButton(
             controller: controller,

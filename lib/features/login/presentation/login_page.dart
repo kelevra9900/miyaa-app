@@ -22,7 +22,7 @@ class _LoginState extends ConsumerState<LoginPage> {
 
   @override
   void initState() {
-    tecEmail.text = "sissa@gmail.com";
+    tecEmail.text = "admin@gmail.com";
     tecPassword.text = "123456789";
     super.initState();
   }

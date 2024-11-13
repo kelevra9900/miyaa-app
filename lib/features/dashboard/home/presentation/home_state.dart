@@ -1,22 +1,23 @@
-import 'package:miyaa/features/login/domain/user.dart';
+import '../../../login/domain/user.dart';
+import '../domain/announcement.dart';
 
 class HomeState {
-  ///Indica si la pantalla esta en modo cargando
-  final bool? initLoading;
-
-  ///Inica si al volver a la pantalla necesitamos volver a consultar información al servidor en caso de actualizaciones
-  final bool? refreshData;
-
-  /// Datos del usuario
+  final bool initLoading;
+  final bool isLoading;
+  final bool activeTracking;
+  final bool refreshData;
   final UserResponse? userData;
-
-  final int? idScreenHome;
+  final int idScreenHome;
+  final List<Announcement>? announcements;
 
   HomeState({
     this.initLoading = true,
     this.refreshData = true,
     this.userData,
     this.idScreenHome = 0,
+    this.isLoading = false,
+    this.activeTracking = false,
+    this.announcements = const [],
   });
 
   HomeState copyWith({
@@ -24,13 +25,18 @@ class HomeState {
     bool? refreshData,
     UserResponse? userData,
     int? idScreenHome,
-    T,
+    bool? isLoading,
+    bool? activeTracking,
+    List<Announcement>? announcements,
   }) {
     return HomeState(
       initLoading: initLoading ?? this.initLoading,
       refreshData: refreshData ?? this.refreshData,
       userData: userData ?? this.userData,
       idScreenHome: idScreenHome ?? this.idScreenHome,
+      isLoading: isLoading ?? this.isLoading,
+      activeTracking: activeTracking ?? this.activeTracking,
+      announcements: announcements ?? this.announcements,
     );
   }
 }

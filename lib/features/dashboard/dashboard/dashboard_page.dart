@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:miyaa/features/dashboard/chat/presentation/chat_page.dart';
+import 'package:miyaa/features/notifications/presentation/home_notifications/home_notifications_page.dart';
 import 'dashboard_controller.dart';
 import 'widgets/custom_principal_menu.dart';
 import '../home/presentation/home_page.dart';
@@ -42,9 +44,9 @@ class _DashboardState extends ConsumerState<DashboardPage> {
       case 0:
         return const HomePage();
       case 1:
-        return const ProfilePage();
+        return const ChatPage();
       case 2:
-        return const ProfilePage();
+        return const HomeNotificationsPage();
       case 3:
         return const ProfilePage();
       case 4:
