@@ -34,7 +34,7 @@ class PathsIcons {
   final String laboratories = "assets/icons/laboratories_icon.svg";
   final String location = "assets/icons/location_icon.svg";
   final String location2 = "assets/icons/location2_icon.svg";
-  final String logo = "assets/icons/logo_icon.svg";
+  final String logo = "assets/images/logo.png";
   final String map = "assets/icons/map_icon.svg";
   final String masterCard = "assets/icons/master_card.svg";
   final String medicalCenters = "assets/icons/medical_centers_icon.svg";

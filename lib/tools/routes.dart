@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:miyaa/features/announcements/presentation/announcement_page.dart';
 import 'package:miyaa/features/dashboard/chat/screens/chat_message.dart';
+import 'package:miyaa/features/incident/presentation/incident_page.dart';
 import 'package:miyaa/features/login/domain/user.dart';
 import 'package:miyaa/features/notifications/presentation/home_notifications/home_notifications_page.dart';
 
@@ -23,6 +25,8 @@ class Routes {
   static const String profile = '/profile';
   static const String notifications = '/notifications';
   static const String settings = '/settings';
+  static const String announcements = '/announcements';
+  static const String incident = '/incident';
 }
 
 final router = GoRouter(initialLocation: Routes.splash, routes: [
@@ -79,6 +83,20 @@ final router = GoRouter(initialLocation: Routes.splash, routes: [
         name: 'chatRoom',
       ),
     ],
+  ),
+  GoRoute(
+    path: Routes.announcements,
+    pageBuilder: (context, state) => page(
+      state: state,
+      child: const AnnouncementPage(),
+    ),
+  ),
+  GoRoute(
+    path: Routes.incident,
+    pageBuilder: (context, state) => page(
+      state: state,
+      child: const IncidentPage(),
+    ),
   ),
   GoRoute(
     path: Routes.notifications,

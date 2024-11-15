@@ -1,3 +1,5 @@
+// ignore_for_file: library_prefixes
+
 import 'dart:developer';
 
 import 'package:miyaa/common/secure_storage.dart';

@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:miyaa/common/secure_storage.dart';
-// import 'package:miyaa/common/secure_storage.dart';
-import 'package:miyaa/tools/routes.dart';
 
-import '../../../../tools/extensions/dimens_extension.dart';
+import '../../../../common/secure_storage.dart';
+import '../../../../tools/routes.dart';
 import '../../../../tools/paths/paths_images.dart';
 import 'utils/init_utils.dart';
 
@@ -37,14 +35,33 @@ class _SplashScreenState extends ConsumerState<SplashScreenPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SizedBox(
-        height: context.height(),
-        width: context.width(),
-        child: Image.asset(
-          images.splash,
-          fit: BoxFit.cover,
-        ),
+        body: Scaffold(
+      body: Stack(
+        fit: StackFit.expand,
+        children: [
+          Container(
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage(images.splash),
+                fit: BoxFit.cover,
+              ),
+            ),
+          ),
+          Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                // Imagen en el centro
+                Image.asset(
+                  images.logoWhite,
+                  width: 200,
+                  height: 200,
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
-    );
+    ));
   }
 }

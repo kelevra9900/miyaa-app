@@ -4,25 +4,28 @@ import 'dart:developer';
 import 'package:background_location/background_location.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:miyaa/common/secure_storage.dart';
+import 'package:miyaa/features/announcements/domain/announcement.dart';
 import 'package:miyaa/features/dashboard/home/presentation/home_state.dart';
 import 'package:miyaa/features/dashboard/profile/data/profile_repository.dart';
 import 'package:miyaa/features/login/data/login_repository.dart';
 import 'package:miyaa/features/login/domain/user.dart';
 
 import '../../../init/presentation/splash_screen/utils/init_utils.dart';
+import '../../../notifications/data/notifications_repository.dart';
 import '../data/home_repository.dart';
-import '../domain/announcement.dart';
 
 class HomeController extends StateNotifier<HomeState> {
   HomeController({
     required this.loginRepository,
     required this.profileRepository,
     required this.homeRepository,
+    required this.notificationsRepository,
   }) : super(HomeState());
 
   final LoginRepository loginRepository;
   final ProfileRepository profileRepository;
   final HomeRepository homeRepository;
+  final NotificationsRepository notificationsRepository;
 
   Future<void> initData() async {
     setInitLoading(true);
@@ -46,8 +49,9 @@ class HomeController extends StateNotifier<HomeState> {
     state = state.copyWith(initLoading: value);
   }
 
-  void setRefreshData(bool value) {
+  void setRefreshData(bool value) async {
     state = state.copyWith(refreshData: value);
+    await secureStorage.clearUserData();
   }
 
   void setInitLoading(bool value) {
@@ -113,5 +117,6 @@ final homeController = StateNotifierProvider<HomeController, HomeState>((ref) {
     loginRepository: ref.watch(loginRepositoryProvider),
     profileRepository: ref.watch(profileRepositoryProvider),
     homeRepository: ref.watch(homeRepositoryProvider),
+    notificationsRepository: ref.watch(notificationsRepositoryProvider),
   );
 });

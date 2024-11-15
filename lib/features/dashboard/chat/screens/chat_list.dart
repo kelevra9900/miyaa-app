@@ -143,7 +143,10 @@ class _ChatListState extends ConsumerState<ChatList> {
                         child: IconButton(
                           icon: SvgPicture.asset(
                             icons.filter,
-                            color: lightColors.grey01,
+                            colorFilter: ColorFilter.mode(
+                              lightColors.grey01,
+                              BlendMode.srcIn,
+                            ),
                             height: 20.h,
                           ),
                           onPressed: () {

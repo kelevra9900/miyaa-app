@@ -269,8 +269,11 @@ class HttpService {
       });
       // Log headers
       var response = await request.send();
+
       log('======= RESPONSE REASON PHRASE: ${response.reasonPhrase} =======');
       log('======= RESPONSE REQUEST: ${response.request} =======');
+
+      // Convierte la respuesta en un String
       var responseString = await response.stream.bytesToString();
 
       return HttpServiceResponse(
@@ -281,9 +284,10 @@ class HttpService {
     } on SocketException catch (e) {
       log('Error: SocketException catch $e');
       return HttpServiceResponse(
-          success: false,
-          message:
-              "Parece que no tienes internet. Revisa tu conexión e inténtalo de nuevo.");
+        success: false,
+        message:
+            "Parece que no tienes internet. Revisa tu conexión e inténtalo de nuevo.",
+      );
     } on TimeoutException catch (_) {
       return HttpServiceResponse(success: false, message: timeoutMessage);
     } catch (e) {

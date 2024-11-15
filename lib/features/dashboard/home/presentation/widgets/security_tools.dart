@@ -26,7 +26,7 @@ class SecurityToolsWidget extends StatelessWidget {
             fontSize: 20,
             fontWeight: FontWeight.w800,
           ),
-          const SizedBox(height: 16), // Ajusta el espaciado vertical aquí
+          const SizedBox(height: 16),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
@@ -37,13 +37,8 @@ class SecurityToolsWidget extends StatelessWidget {
               ),
               _ToolButton(
                 icon: Icons.map,
-                label: 'Áreas Seguras',
+                label: 'Anuncios',
                 onTap: onSafeAreaLocations,
-              ),
-              _ToolButton(
-                icon: Icons.logout,
-                label: 'Check-out',
-                onTap: onCheckOut,
               ),
             ],
           ),
@@ -59,7 +54,6 @@ class _ToolButton extends StatelessWidget {
   final VoidCallback onTap;
 
   const _ToolButton({
-    super.key,
     required this.icon,
     required this.label,
     required this.onTap,

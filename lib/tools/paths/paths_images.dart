@@ -14,6 +14,7 @@ class PathsImages {
   final String location = "assets/images/location.png";
   final String locationMarker = "assets/images/location_marker.png";
   final String logo = "assets/images/logo.png";
+  final String logoWhite = "assets/images/logo_white.png";
   final String marker = "assets/images/marker.png";
   final String mastercard = "assets/images/mastercard.png";
   final String mastercardIconCard = "assets/images/mastercard_icon_card.png";

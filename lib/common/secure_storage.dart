@@ -66,6 +66,13 @@ class SecureStorage {
     await _storage.delete(key: 'tokenNotification');
     await setIsLoggedIn(false);
   }
+
+  Future<void> clearUserData() async {
+    await _storage.delete(key: 'userData');
+    await _storage.delete(key: 'token');
+    await _storage.delete(key: 'fcmToken');
+    await setIsLoggedIn(false);
+  }
 }
 
 final SecureStorage secureStorage = SecureStorage();

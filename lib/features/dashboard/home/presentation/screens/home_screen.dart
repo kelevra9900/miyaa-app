@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
 import 'package:miyaa/features/dashboard/dashboard/dashboard_controller.dart';
 import 'package:miyaa/features/dashboard/home/presentation/home_controller.dart';
 import 'package:miyaa/features/dashboard/home/presentation/home_state.dart';
@@ -8,6 +9,7 @@ import 'package:miyaa/features/dashboard/home/presentation/widgets/background_ho
 import 'package:miyaa/features/dashboard/home/presentation/widgets/header_home.dart';
 import 'package:miyaa/features/dashboard/home/presentation/widgets/ripple_button.dart';
 import 'package:miyaa/tools/extensions/dimens_extension.dart';
+import 'package:miyaa/tools/routes.dart';
 
 import '../widgets/hello_user.dart';
 import '../widgets/security_tools.dart';
@@ -53,9 +55,11 @@ class HomeScreen extends StatelessWidget {
                     SecurityToolsWidget(
                       onReportIncident: () {
                         // Lógica para reportar un incidente
+                        context.push(Routes.incident);
                       },
                       onSafeAreaLocations: () {
                         // Lógica para mostrar áreas seguras
+                        context.push(Routes.announcements);
                       },
                       onCheckOut: () {
                         // Lógica para realizar check-out

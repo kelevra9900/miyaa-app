@@ -1,9 +1,13 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:miyaa/common/network/custom_catch_error.dart';
 import '../../../../common/custom_colors.dart';
+import '../../../../common/secure_storage.dart';
 import '../../../../tools/routes.dart';
+import '../../domain/user.dart';
 import '../login_controller.dart';
 import '../login_state.dart';
 import '../../../../tools/custom_text.dart';
@@ -78,22 +82,17 @@ class _FormLoginState extends State<FormLogin> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   const CustomText(
-                    '¿Olvidaste tu contraseña?',
+                    'Inicia sesión con',
                     fontSize: 14,
                   ),
+                  SizedBox(width: 10.sp),
                   InkWell(
                     onTap: () {
                       widget.tecEmailModal.clear();
-                      // dialogs.showModalBottomDynamic(context,
-                      //     child: ModalForgotPassword(
-                      //       pageController: widget.pageController,
-                      //       pageState: widget.pageState,
-                      //       tecEmailModal: widget.tecEmailModal,
-                      //       formkey: widget.formkeyModal,
-                      //     ));
+                      widget.pageController.openCamera(context);
                     },
                     child: CustomText(
-                      'Recupérala aquí',
+                      'Biometría',
                       fontSize: 14,
                       fontWeight: FontWeight.w500,
                       textColor: lightColors.primaryColor,
@@ -117,10 +116,10 @@ class _FormLoginState extends State<FormLogin> {
           email: widget.tecEmail.text,
           password: widget.tecPassword.text,
         );
-        // UserDataResponse userData =
+        // UserResponse userData =
         //     await widget.pageController.loginRepository.getUserData();
         // String? tokenNotification = await secureStorage.tokenNotification;
-        // if (userData.fcmToken != tokenNotification) {
+        // if (userData.user?.fcm != tokenNotification) {
         //   log("se guarda el token ==================================");
         //   await widget.pageController.notificationsRepository
         //       .updateFcmToken(tokenNotification ?? "");

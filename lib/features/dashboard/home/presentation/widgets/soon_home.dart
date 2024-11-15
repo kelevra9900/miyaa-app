@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:miyaa/tools/extensions/dimens_extension.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../../../common/custom_colors.dart';
 import '../../../../../tools/custom_text.dart';
+import '../../../../../tools/routes.dart';
 import '../../../dashboard/dashboard_controller.dart';
 
 class SoonHome extends StatelessWidget {
@@ -29,7 +30,7 @@ class SoonHome extends StatelessWidget {
                 fontWeight: FontWeight.w800,
               ),
               GestureDetector(
-                  onTap: () => controller.setCurrentScreen(1),
+                  onTap: () => context.push(Routes.announcements),
                   child: CustomText(
                     'Ver más',
                     fontSize: 13,
@@ -38,12 +39,6 @@ class SoonHome extends StatelessWidget {
                   ))
             ],
           ),
-          SizedBox(height: 10.sp),
-          // SizedBox(
-          //   height: 180.sp,
-          //   width: context.width(),
-          //   child: const CustomStackedCards(),
-          // ),
           SizedBox(height: 30.sp),
         ],
       ),

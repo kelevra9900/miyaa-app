@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
+import 'package:miyaa/features/login/domain/user.dart';
 import '../../../../../common/custom_colors.dart';
 import '../../../../../common/user_preferences.dart';
-import '../../../../../tools/routes.dart';
 import '../chat_controller.dart';
 import '../../../profile/widgets/profile_name_photo.dart';
 import '../../../../../tools/custom_text.dart';
@@ -14,9 +14,11 @@ class CustomHeaderChat extends StatelessWidget {
   const CustomHeaderChat({
     super.key,
     required this.controller,
+    required this.user,
   });
 
   final ChatController controller;
+  final User user;
 
   @override
   Widget build(BuildContext context) {
@@ -41,7 +43,7 @@ class CustomHeaderChat extends StatelessWidget {
                     iconColor: Colors.white,
                     onTap: () {
                       controller.disconnect();
-                      context.go(Routes.dashboard);
+                      context.pop();
                     }),
                 SizedBox(width: 16.sp),
                 UserPhoto(
@@ -54,8 +56,8 @@ class CustomHeaderChat extends StatelessWidget {
                   children: [
                     SizedBox(
                       width: context.width(.38),
-                      child: const CustomText(
-                        "Luis Castillo",
+                      child: CustomText(
+                        "${user.firstName} ${user.lastName}",
                         fontWeight: FontWeight.w600,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,

@@ -1,5 +1,5 @@
+import '../../../announcements/domain/announcement.dart';
 import '../../../login/domain/user.dart';
-import '../domain/announcement.dart';
 
 class HomeState {
   final bool initLoading;

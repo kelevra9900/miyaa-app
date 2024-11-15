@@ -2,12 +2,12 @@ import 'dart:convert';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
-import 'package:miyaa/features/announcements/domain/announcement.dart';
 
-import '../../../../common/network/network_service.dart';
+import '../../../common/network/network_service.dart';
+import '../domain/announcement.dart';
 
-class HomeRepository {
-  HomeRepository({required this.client});
+class AnnouncementsRepository {
+  AnnouncementsRepository({required this.client});
   final http.Client client;
 
   Future<AnnouncementResponse> getAnnouncements() async {
@@ -18,7 +18,7 @@ class HomeRepository {
       );
 
       if (response.success == true) {
-        return AnnouncementResponse.fromJson(json.decode(response.body ?? ''));
+        return AnnouncementResponse.fromJson(json.decode(response.body!));
       } else {
         throw response;
       }
@@ -28,6 +28,6 @@ class HomeRepository {
   }
 }
 
-final homeRepositoryProvider = Provider<HomeRepository>(
-  (ref) => HomeRepository(client: http.Client()),
+final announcementsRepository = Provider<AnnouncementsRepository>(
+  (ref) => AnnouncementsRepository(client: http.Client()),
 );
