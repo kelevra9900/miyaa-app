@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
 import 'package:miyaa/features/dashboard/home/presentation/home_controller.dart';
 import 'package:miyaa/features/dashboard/profile/widgets/profile_menu_options.dart';
 
 import '../../../common/custom_colors.dart';
+import '../../../common/secure_storage.dart';
+import '../../../tools/routes.dart';
 import '../../../widgets/buttons/arrow_button.dart';
 import '../dashboard/dashboard_controller.dart';
 import 'profile_controller.dart';
@@ -90,6 +93,12 @@ class _ProfileState extends ConsumerState<ProfilePage> {
                         controllerDashboard.setInitLoading(true);
                         controllerHome.setInitLoadiing(true);
                         controllerHome.setRefreshData(true);
+                        await secureStorage.setIsLoggedIn(false);
+                        await secureStorage.setJwt("");
+                        await secureStorage.setUserData("");
+
+                        if (!context.mounted) return;
+                        context.go(Routes.splash);
                       },
                     ),
                   ),

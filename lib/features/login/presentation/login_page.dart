@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:miyaa/features/login/presentation/widgets/form_login.dart';
-import '../../../widgets/buttons/primary_button.dart';
 import 'login_controller.dart';
 import '../../../tools/custom_text.dart';
 
@@ -23,7 +22,7 @@ class _LoginState extends ConsumerState<LoginPage> {
 
   @override
   void initState() {
-    tecEmail.text = "admin@gmail.com";
+    tecEmail.text = "sissa@gmail.com";
     tecPassword.text = "123456789";
     super.initState();
   }

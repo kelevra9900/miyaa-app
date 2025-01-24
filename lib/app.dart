@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:is_first_run/is_first_run.dart';
 import 'package:responsive_builder/responsive_builder.dart';
@@ -10,6 +11,7 @@ import 'package:theme_manager/theme_manager.dart';
 import 'common/local_notifications/local_notifications.dart';
 import 'common/secure_storage.dart';
 import 'common/user_preferences.dart';
+import 'generated/l10n.dart';
 import 'tools/routes.dart';
 import 'tools/theme.dart';
 
@@ -95,6 +97,12 @@ class _AppState extends State<App> {
               routeInformationParser: router.routeInformationParser,
               routerDelegate: router.routerDelegate,
               routeInformationProvider: router.routeInformationProvider,
+              localizationsDelegates: const [
+                S.delegate,
+                GlobalMaterialLocalizations.delegate,
+                GlobalWidgetsLocalizations.delegate,
+                GlobalCupertinoLocalizations.delegate,
+              ],
             ),
           ),
         );

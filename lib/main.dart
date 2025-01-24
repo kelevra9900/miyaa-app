@@ -1,31 +1,33 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_flavor/flutter_flavor.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'app.dart';
 import 'common/secure_storage.dart';
 
-import 'common/firebase/firebase_options.dart';
+import 'app.dart';
 import 'common/user_preferences.dart';
+import 'firebase_options.dart';
 
 Future<void> main() async {
   FlavorConfig(
-    name: "DEV",
+    name: "PROD",
     variables: {
-      "baseUrl": "https://backstaging.doctorsnet.mx",
+      "baseUrl": "https://miyaa-v1-e224e7c85f0e.herokuapp.com",
       "timeOtp": 300,
     },
   );
+
   WidgetsFlutterBinding.ensureInitialized();
+
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
   await prefs.initPrefs();
   await secureStorage.initStorage();
-  SystemChrome.setPreferredOrientations([
-    DeviceOrientation.portraitUp,
-    DeviceOrientation.portraitDown,
-  ]);
-  runApp(const ProviderScope(child: App()));
+
+  runApp(
+    const ProviderScope(
+      child: App(),
+    ),
+  );
 }

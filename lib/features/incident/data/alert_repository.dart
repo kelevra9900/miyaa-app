@@ -11,15 +11,13 @@ class AlertRepository {
   }) : super();
 
   final http.Client client;
-
-  // Endpoint /upload to send the imag e to the server and get the URL
-  Future<String> uploadImage(File file) async {
+  Future<String> uploadImage(String file) async {
     try {
       var response = await httpService.postMultipart(
         endpoint: '/upload',
         client: client,
         body: {
-          'file': file,
+          'file': await http.MultipartFile.fromPath('file', file),
         },
       );
 

@@ -73,6 +73,14 @@ class SecureStorage {
     await _storage.delete(key: 'fcmToken');
     await setIsLoggedIn(false);
   }
+
+  Future<String?> get fcmToken async {
+    return await _storage.read(key: 'fcmToken') ?? "";
+  }
+
+  Future<void> setFcmToken(String value) async {
+    await _storage.write(key: 'fcmToken', value: value);
+  }
 }
 
 final SecureStorage secureStorage = SecureStorage();

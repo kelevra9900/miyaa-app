@@ -3,15 +3,13 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:miyaa/common/network/custom_catch_error.dart';
-import 'package:miyaa/features/login/data/login_repository.dart';
-import 'package:miyaa/features/login/domain/user.dart';
-import 'package:miyaa/tools/routes.dart';
 
+import '../../../common/network/custom_catch_error.dart';
 import '../../../common/secure_storage.dart';
 import '../../notifications/data/notifications_repository.dart';
+import '../data/login_repository.dart';
+import '../domain/user.dart';
 import 'login_state.dart';
 
 class LoginController extends StateNotifier<LoginState> {
@@ -43,11 +41,13 @@ class LoginController extends StateNotifier<LoginState> {
     final XFile? image = await picker.pickImage(source: ImageSource.camera);
     if (image != null && image.path.isNotEmpty) {
       try {
-        var response = await loginRepository.uploadBiometric(file: image.path);
+        var response = await loginRepository.uploadBiometric(
+            file: image.path, context: ctx);
         // GoRouter.of(ctx).go('/home');
 
         log('Response uploadBiometric: $response');
       } catch (e) {
+        print('Error to upload image on controller ========: $e');
         customError.catchError(e: 'Intenta de nuevo por favor', context: ctx);
       } finally {
         setIsLoading(false);

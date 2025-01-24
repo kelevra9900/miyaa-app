@@ -3,13 +3,15 @@ import 'dart:developer';
 
 import 'package:background_location/background_location.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:miyaa/common/secure_storage.dart';
-import 'package:miyaa/features/announcements/domain/announcement.dart';
-import 'package:miyaa/features/dashboard/home/presentation/home_state.dart';
-import 'package:miyaa/features/dashboard/profile/data/profile_repository.dart';
-import 'package:miyaa/features/login/data/login_repository.dart';
-import 'package:miyaa/features/login/domain/user.dart';
 
+import '../../../../common/secure_storage.dart';
+import '../../../announcements/domain/announcement.dart';
+import 'home_state.dart';
+import '../../profile/data/profile_repository.dart';
+import '../../../login/data/login_repository.dart';
+import '../../../login/domain/user.dart';
+import '../../../../common/network/socket_manager.dart';
+import '../../../../common/user_preferences.dart';
 import '../../../init/presentation/splash_screen/utils/init_utils.dart';
 import '../../../notifications/data/notifications_repository.dart';
 import '../data/home_repository.dart';
@@ -32,6 +34,22 @@ class HomeController extends StateNotifier<HomeState> {
     await getUserData();
     await getAnnouncements();
     setInitLoading(false);
+    await getFcmToken();
+  }
+
+  // Get fcm token
+  Future<void> getFcmToken() async {
+    String? fcmToken = await secureStorage.fcmToken;
+    String? currentFCMToken = await initUtils.getFcmToken();
+
+    if (fcmToken != currentFCMToken) {
+      await setFCMToken(currentFCMToken!);
+    }
+  }
+
+  Future<void> setFCMToken(String fcmToken) async {
+    await secureStorage.setFcmToken(fcmToken);
+    await homeRepository.updateFCMToken(fcmToken);
   }
 
   Future<void> getUserData() async {
@@ -105,6 +123,23 @@ class HomeController extends StateNotifier<HomeState> {
       return response;
     } catch (e) {
       log("Error al cargar anuncios: $e");
+      rethrow;
+    } finally {
+      setInitLoading(false);
+    }
+  }
+
+  Future<void> sendSOS() async {
+    try {
+      setInitLoading(true);
+      SocketManager().emit('new_alert', {
+        'latitude': prefs.latitude,
+        'longitude': prefs.longitude,
+        'content': 'S.O.S',
+      });
+      startBackgroundLocationService();
+    } catch (e) {
+      log("Error al enviar SOS: $e");
       rethrow;
     } finally {
       setInitLoading(false);

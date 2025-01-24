@@ -1,60 +1,52 @@
-import 'dart:io';
-
 import '../../../login/domain/user.dart';
 import '../domain/chat_response.dart';
+import '../domain/message_model.dart';
 
 class ChatState {
-  final dynamic messages;
-  final String? message;
-  final File? fileSelected;
-  final bool isLoaded;
-  final List<User> users;
-  final bool isConnected;
-  final String? chatRoomId;
-  final int page;
-  final int limit;
   final bool isLoading;
-  final List<ChatsResponse> chatList;
+  final bool isSending;
+  final bool isConnected;
+  final List<User> users;
+  final User? userSelected;
+  final int? chatRoomId;
+  final List<ChatsResponse> chatsResponse;
+  final List<Message> messages;
 
-  ChatState({
-    this.messages = const [],
-    this.users = const [],
-    this.isLoaded = false,
-    this.isConnected = false,
+  final UserResponse? userData;
+
+  const ChatState({
     this.isLoading = false,
-    this.fileSelected,
-    this.message,
-    this.page = 1,
-    this.limit = 50,
+    this.isSending = false,
+    this.isConnected = false,
+    this.users = const [],
+    this.userSelected,
     this.chatRoomId,
-    this.chatList = const [],
+    this.chatsResponse = const [],
+    this.messages = const [],
+    this.userData,
   });
 
   ChatState copyWith({
     bool? isLoading,
-    dynamic messages,
-    bool? isLoaded,
+    bool? isSending,
     bool? isConnected,
-    File? fileSelected,
-    String? message,
-    int? page,
-    int? limit,
-    String? chatRoomId,
     List<User>? users,
-    List<ChatsResponse>? chatList,
+    User? userSelected,
+    int? chatRoomId,
+    List<ChatsResponse>? chatsResponse,
+    List<Message>? messages,
+    UserResponse? userData,
   }) {
     return ChatState(
-      messages: messages ?? this.messages,
-      users: users ?? this.users,
-      isLoaded: isLoaded ?? this.isLoaded,
-      isConnected: isConnected ?? this.isConnected,
-      fileSelected: fileSelected ?? this.fileSelected,
-      message: message ?? this.message,
-      page: page ?? this.page,
-      limit: limit ?? this.limit,
-      chatRoomId: chatRoomId ?? this.chatRoomId,
       isLoading: isLoading ?? this.isLoading,
-      chatList: chatList ?? this.chatList,
+      isSending: isSending ?? this.isSending,
+      isConnected: isConnected ?? this.isConnected,
+      users: users ?? this.users,
+      userSelected: userSelected ?? this.userSelected,
+      chatRoomId: chatRoomId ?? this.chatRoomId,
+      chatsResponse: chatsResponse ?? this.chatsResponse,
+      messages: messages ?? this.messages,
+      userData: userData ?? this.userData,
     );
   }
 }

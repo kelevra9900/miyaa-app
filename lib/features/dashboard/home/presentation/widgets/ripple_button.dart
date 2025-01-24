@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
+import 'package:miyaa/tools/custom_dialogs.dart';
 import 'package:simple_ripple_animation/simple_ripple_animation.dart';
 
 import '../../../../../tools/custom_text.dart';
+import '../../../../../tools/models/modal_dynamic_data.dart';
 import '../../../../../tools/paths/paths_gifs.dart';
+import '../home_controller.dart';
 
 class RippleButton extends StatelessWidget {
   const RippleButton({
@@ -14,7 +17,7 @@ class RippleButton extends StatelessWidget {
     this.title = 'SOS',
     this.fontSize = 18,
     this.isLoading = false,
-    this.onTap,
+    required this.controller,
   });
 
   final String route;
@@ -22,7 +25,7 @@ class RippleButton extends StatelessWidget {
   final String title;
   final double fontSize;
   final bool isLoading;
-  final Function? onTap;
+  final HomeController controller;
 
   @override
   Widget build(BuildContext context) {
@@ -35,12 +38,17 @@ class RippleButton extends StatelessWidget {
       duration: const Duration(milliseconds: 6 * 900),
       child: GestureDetector(
         onTap: () {
-          if (isSOS) {
-            // context.push(Routes.emergency);
-            onTap!();
-            return;
-          }
-          context.pop();
+          controller.sendSOS();
+          dialogs.showMessageDialog(
+            context,
+            isDismissible: true,
+            data: ModalDinamicData(
+                title: "¡SOS!",
+                subtitle: 'Hemos enviado tu solicitud de ayuda',
+                onPressed: () {
+                  context.pop();
+                }),
+          );
         },
         child: CircleAvatar(
           minRadius: 90,

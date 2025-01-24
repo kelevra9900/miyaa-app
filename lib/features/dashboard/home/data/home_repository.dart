@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
@@ -22,6 +23,32 @@ class HomeRepository {
       } else {
         throw response;
       }
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<dynamic> updateFCMToken(String token) async {
+    try {
+      Map<String, dynamic> body = {
+        'fcmToken': token,
+      };
+
+      var response = await httpService.patch(
+        endpoint: '/users/fcm',
+        client: client,
+        body: body,
+        needAuth: true,
+      );
+
+      log('Response updateFCMToken: ${response.body}');
+
+      // if (response.success == true) {
+      //   return response.body!;
+      // } else {
+      //   throw response;
+      // }
+      return 'Test';
     } catch (e) {
       rethrow;
     }

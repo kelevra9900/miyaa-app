@@ -3,40 +3,39 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_flavor/flutter_flavor.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:miyaa/common/secure_storage.dart';
+import 'package:miyaa/firebase_options.dart';
+import 'common/custom_colors.dart';
+import 'common/secure_storage.dart';
 
 import 'app.dart';
-import 'common/firebase/firebase_options.dart';
 import 'common/user_preferences.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
-import 'dart:developer';
 
-Future<void> backgroundMessageHandler(RemoteMessage message) async {
-  await Firebase.initializeApp();
-  log("Background message received: ${message.messageId}");
-}
-
+// al mandar reporte de incidente
 Future<void> main() async {
   FlavorConfig(
-    name: "PROD",
+    name: "DEV",
     variables: {
-      "baseUrl": "http://10.0.2.2:1337",
-      "timeOtp": 60,
+      "baseUrl": "https://miyaa-v1-e224e7c85f0e.herokuapp.com",
+      "timeOtp": 300
     },
   );
+
   WidgetsFlutterBinding.ensureInitialized();
+  await SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+  ]);
+
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
   await prefs.initPrefs();
   await secureStorage.initStorage();
-
-  SystemChrome.setPreferredOrientations([
-    DeviceOrientation.portraitUp,
-    DeviceOrientation.portraitDown,
-  ]);
-
-  FirebaseMessaging.onBackgroundMessage(backgroundMessageHandler);
-
-  runApp(const ProviderScope(child: App()));
+  SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+    statusBarColor: lightColors.primaryColor,
+  ));
+  runApp(
+    const ProviderScope(
+      child: App(),
+    ),
+  );
 }

@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
 
@@ -6,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
+
 import '../../../common/network/socket_manager.dart';
 import '../../../common/user_preferences.dart';
 import '../../../tools/custom_dialogs.dart';
@@ -59,10 +59,7 @@ class IncidentsController extends StateNotifier<IncidentState> {
     setLoading(true);
     try {
       if (state.image != null) {
-        // Send image to the server and get the URL, is multipart
-        final File file = File(state.image!);
-
-        final String imageUrl = await alertRepository.uploadImage(file);
+        final String imageUrl = await alertRepository.uploadImage(state.image!);
         log('Getting ======> Image URL: $imageUrl');
         setImage(imageUrl);
       }
@@ -125,8 +122,7 @@ class IncidentsController extends StateNotifier<IncidentState> {
       'latitude': prefs.latitude,
       'longitude': prefs.longitude,
       'content': state.description,
-      'image':
-          imageUrl ?? '', // Envía la URL de la imagen en lugar de la ruta local
+      'image': imageUrl,
     };
   }
 }

@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'dart:developer';
 
 import 'package:chat_bubbles/chat_bubbles.dart';
@@ -33,23 +32,27 @@ class _ChatMessagesState extends ConsumerState<ChatMessages> {
   @override
   void initState() {
     super.initState();
-    Future.microtask(() async {
-      await ref.read(profileController.notifier).initData();
-      ref.read(chatControllerProvider.notifier).initialize(widget.chatId);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      initialize();
     });
   }
 
   void initialize() {
+    log("conversationId: ${widget.chatId}");
     log('user id: ${widget.user.id}');
-    log('Conversation ID: ${widget.chatId.toString()}');
-    var profileState = ref.watch(profileController);
-    var idUserString = profileState.userData?.user?.id.toString();
+    var controller = ref.read(profileController.notifier);
+    var chatController = ref.read(chatControllerProvider.notifier);
+    // Set loading to true
+    chatController.setIsLoading(true);
+    controller.initData();
+    Future.delayed(const Duration(seconds: 1), () {
+      ref
+          .read(chatControllerProvider.notifier)
+          .getMessages(widget.user.id, widget.chatId);
 
-    if (idUserString != null) {
-      ref.read(chatControllerProvider.notifier).getMessages(
-            widget.chatId.toString(),
-          );
-    }
+      // Set loading to false
+      chatController.setIsLoading(false);
+    });
   }
 
   @override
@@ -103,17 +106,13 @@ class _ChatMessagesState extends ConsumerState<ChatMessages> {
                     ),
             ),
             Container(
-              padding: const EdgeInsets.all(10),
+              padding: const EdgeInsets.all(0),
               child: InputMessageBar(
                 controller: tecMessage,
                 onSend: (message) {
-                  log('Sending message: $message');
-                  log('Current user id: ${jsonEncode(profileState.userData?.user?.id)}');
+                  int currentUserId = profileState.userData?.user?.id ?? 0;
                   ref.read(chatControllerProvider.notifier).sendMessage(
-                        message,
-                        int.parse(widget.chatId),
-                        profileState.userData!.user!.id!,
-                      );
+                      message, widget.user.id!, currentUserId, widget.chatId);
                 },
               ),
             ),

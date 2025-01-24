@@ -59,5 +59,4 @@ class DefaultFirebaseOptions {
     projectId: 'miyaa-62d2d',
     storageBucket: 'miyaa-62d2d.firebasestorage.app',
   );
-
 }

@@ -48,8 +48,9 @@ class HomeScreen extends StatelessWidget {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    const RippleButton(
+                    RippleButton(
                       route: '/',
+                      controller: controller,
                     ),
                     SizedBox(height: 70.sp),
                     SecurityToolsWidget(

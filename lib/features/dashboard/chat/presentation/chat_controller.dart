@@ -1,5 +1,5 @@
+import 'dart:convert';
 import 'dart:developer';
-import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -7,24 +7,23 @@ import 'package:go_router/go_router.dart';
 import 'package:miyaa/features/dashboard/chat/domain/chat_response.dart';
 
 import '../../../../common/network/socket_manager.dart';
+import '../../../../common/secure_storage.dart';
 import '../../../login/domain/user.dart';
+import '../../dashboard/dashboard_controller.dart';
+import '../../profile/data/profile_repository.dart';
 import '../domain/message_model.dart';
 import 'chat_state.dart';
 
 class ChatController extends StateNotifier<ChatState> {
-  ChatController() : super(ChatState()) {
+  ChatController({
+    required this.profileRepository,
+    required this.ref,
+  }) : super(const ChatState()) {
     _registerNewMessageListener();
   }
-  init() {
-    state = state.copyWith(isLoaded: true);
-    connect();
-  }
 
-  void initialize(String chatId) {
-    getMessages(
-      chatId,
-    );
-  }
+  final ProfileRepository profileRepository;
+  final Ref ref;
 
   void disconnect() {
     SocketManager().emit('user-disconnected');
@@ -32,74 +31,52 @@ class ChatController extends StateNotifier<ChatState> {
     setIsConnected(false);
   }
 
-  void setIsConnected(bool value) {
-    state = state.copyWith(isConnected: value);
-  }
-
-  setMessages(dynamic messages) {
-    state = state.copyWith(messages: messages);
-  }
-
   void setIsLoading(bool value) {
     state = state.copyWith(isLoading: value);
   }
 
-  addMessage(dynamic message) {
-    state = state.copyWith(messages: [...state.messages, message]);
+  void setIsSending(bool value) {
+    state = state.copyWith(isSending: value);
   }
 
-  setFileSelected(File? file) {
-    state = state.copyWith(fileSelected: file);
+  void setIsConnected(bool value) {
+    state = state.copyWith(isConnected: value);
   }
 
-  clearFileSelected() {
-    state = state.copyWith(fileSelected: null);
+  void addMessage(Message message) {
+    state = state.copyWith(
+      messages: [message, ...state.messages],
+    );
   }
 
-  void connect() {
-    // chatService.connect();
+  void goBackToChats() {
+    ref.read(dashboardController.notifier).setCurrentScreen(1);
+  }
 
-    // if (chatService.isFirstConnection) {
-    //   chatService.connectionEstablished.then((value) {
-    //     initialEmit();
-    //     listenMessages();
-    //   });
-    // } else {
-    //   listenMessages();
-    // }
+  Future<void> getUserData() async {
+    String? currentUser = await secureStorage.userData;
+    if (currentUser == null || currentUser == "") {
+      UserResponse userData = await profileRepository.getProfileData();
+      state = state.copyWith(userData: userData);
+    } else {
+      state = state.copyWith(
+          userData: UserResponse.fromJson(json.decode(currentUser)));
+    }
   }
 
   void sendMessage(
     String messageContent,
-    int chatRoomId,
+    int participantId,
     int currentId,
+    String conversationId,
   ) async {
     SocketManager().emit('sendMessage', {
-      'conversationId': chatRoomId,
-      'userId': currentId,
       'message': messageContent,
       'type': 'TEXT',
+      'userId': participantId,
+      'conversationId': conversationId
     });
-
-    log('Sending message: $messageContent');
-    log('Current user id: $currentId');
-    log('Chat room id: $chatRoomId');
     getChatMessages();
-  }
-
-  void sendMessageWithFile(String message, File? file) async {}
-
-  initialEmit() {}
-
-  listenMessages() {}
-
-  void _registerNewMessageListener() {
-    SocketManager().off('newMessage');
-    SocketManager().on('newMessage', (data) {
-      log('New message: $data');
-      var message = Message.fromJson(data);
-      addMessage(message);
-    });
   }
 
   void getChatMessages() {
@@ -112,6 +89,10 @@ class ChatController extends StateNotifier<ChatState> {
       setChatsResponse(chats);
     });
     setIsLoading(false);
+  }
+
+  setChatsResponse(List<ChatsResponse> data) {
+    state = state.copyWith(chatsResponse: data);
   }
 
   void getUsers() {
@@ -129,15 +110,7 @@ class ChatController extends StateNotifier<ChatState> {
     state = state.copyWith(users: data);
   }
 
-  setChatsResponse(List<ChatsResponse> data) {
-    state = state.copyWith(chatList: data);
-  }
-
-  setChatRoomId(String chatRoomId) {
-    state = state.copyWith(chatRoomId: chatRoomId);
-  }
-
-  createConversation(User user, BuildContext context) {
+  joinChat(User user, BuildContext context) {
     setIsLoading(true);
     log('Joining chat with user: ${user.id}');
 
@@ -145,70 +118,88 @@ class ChatController extends StateNotifier<ChatState> {
       'participant': user.id,
     });
 
-    SocketManager().off('joinedRoom');
-
-    SocketManager().on('joinedRoom', (data) {
-      log('Received joinedRoom data: $data');
-      setChatRoomId(data['conversationId'].toString());
-      if (data['conversationId'] != null) {
-        context.pushNamed(
-          'chatRoom',
-          extra: user,
-          pathParameters: {
-            'id': data['conversationId'].toString(),
-          },
-        );
-      }
-
-      setIsLoading(false);
-    });
-  }
-
-  void getMessages(String chatId) {
-    SocketManager().emit('chatHistory', {
-      'id': chatId,
-    });
-    SocketManager().on('chatHistory', (data) {
-      log('Received chat history: $data');
+    SocketManager().on('conversation/${state.chatRoomId}', (data) {
       var messages = data.map<Message>((e) => Message.fromJson(e)).toList();
       setMessages(messages);
     });
+
+    Future.delayed(const Duration(seconds: 1), () {
+      context.pushNamed(
+        'chatRoom',
+        extra: user,
+        pathParameters: {
+          'id': state.chatRoomId.toString(),
+        },
+      );
+    });
+
+    setIsLoading(false);
+
+    getChatMessages();
+  }
+
+  setMessages(List<Message> data) {
+    state = state.copyWith(messages: data);
   }
 
   cleanMessages() {
     state = state.copyWith(messages: []);
   }
 
-  // joinChat(User user, String chatRoomId, BuildContext context) {
-  //   setIsLoading(true);
-  //   log('Joining chat with user: ${user.id}');
+  createChatRoom() {
+    // Código comentado
+  }
 
-  //   SocketManager().emit('selectRoom', {
-  //     'participant': user.id,
-  //   });
+  void joinConversation(int conversationId) {
+    SocketManager().emit('joinConversation', {
+      'conversationId': conversationId.toString(),
+    });
+  }
 
-  //   SocketManager().on('conversation/$chatRoomId', (data) {
-  //     var messages = data.map<Message>((e) => Message.fromJson(e)).toList();
-  //     setMessages(messages);
-  //   });
+  void getMessages(int? participantId, conversationId) {
+    log('Getting messages for user: $participantId');
 
-  //   Future.delayed(const Duration(seconds: 1), () {
-  //     context.pushNamed(
-  //       'chatRoom',
-  //       extra: user,
-  //       pathParameters: {
-  //         'id': chatRoomId,
-  //       },
-  //     );
-  //   });
+    if (participantId != null) {
+      log('Getting messages for user isnt null: $participantId');
 
-  //   setIsLoading(false);
+      SocketManager().emit('chatHistory',
+          {'id': participantId, 'conversationId': conversationId});
+      SocketManager().on('chatHistory', (data) {
+        var messages = data.map<Message>((e) => Message.fromJson(e)).toList();
+        setMessages(messages);
+      });
+    } else {
+      log('No conversation id');
+    }
+  }
 
-  //   getChatMessages();
-  // }
+  setChatRoomId(int id) {
+    state = state.copyWith(chatRoomId: id);
+  }
+
+  void _registerNewMessageListener() {
+    SocketManager().off('newMessage');
+    SocketManager().on('newMessage', (data) {
+      log('New message received: $data');
+      var message = Message.fromJson(data);
+      var roomId = data['conversationId'];
+
+      if (roomId == state.chatRoomId) {
+        log(' $roomId - ${state.chatRoomId.toString()}');
+        addMessage(message);
+      } else {
+        log('Message is from a different room, ignoring...');
+      }
+    });
+  }
 }
 
 final chatControllerProvider =
     StateNotifierProvider<ChatController, ChatState>((ref) {
-  return ChatController();
+  return ChatController(
+    profileRepository: ref.watch(
+      profileRepositoryProvider,
+    ),
+    ref: ref,
+  );
 });

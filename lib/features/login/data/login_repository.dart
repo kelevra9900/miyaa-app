@@ -1,12 +1,14 @@
 import 'dart:convert';
 import 'dart:developer';
 
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
 import 'package:miyaa/common/network/custom_catch_error.dart';
 import '../../../common/network/network_service.dart';
 import '../../../common/secure_storage.dart';
 import '../../../common/user_preferences.dart';
+import '../../init/presentation/splash_screen/utils/init_utils.dart';
 import '../domain/auth_response.dart';
 
 class LoginRepository {
@@ -16,6 +18,7 @@ class LoginRepository {
 
   Future<dynamic> uploadBiometric({
     required String file,
+    required BuildContext? context,
   }) async {
     try {
       var response = await httpService.postMultipart(
@@ -33,6 +36,11 @@ class LoginRepository {
         var decoded = json.decode(response.body!);
         var data = AuthResponse.fromJson(decoded);
         log('Response login: $decoded');
+
+        if (data.message == 'User not found') {
+          customError.catchError(
+              e: 'No hemos encontrado coincidencias', context: context!);
+        }
 
         if (data.jwt != null) await secureStorage.setJwt(data.jwt!);
 
@@ -89,6 +97,12 @@ class LoginRepository {
 
       if (response.body != null) {
         var decoded = json.decode(response.body!);
+
+        secureStorage.setUserData(response.body ?? "");
+        String fcmToken = await initUtils.getFcmToken() ?? "";
+        if (fcmToken != "") {
+          await updateFCMToken(fcmToken);
+        }
         log('Response getUserData: $decoded');
         return decoded;
       } else {
@@ -97,6 +111,32 @@ class LoginRepository {
       }
     } catch (e) {
       log('Error to get user data on repository ========: $e');
+      rethrow;
+    }
+  }
+
+  Future<dynamic> updateFCMToken(String token) async {
+    try {
+      Map<String, dynamic> body = {
+        'fcmToken': token,
+      };
+
+      var response = await httpService.patch(
+        endpoint: '/users/fcm',
+        client: client,
+        body: body,
+        needAuth: true,
+      );
+
+      log('Response updateFCMToken: ${response.body}');
+
+      // if (response.success == true) {
+      //   return response.body!;
+      // } else {
+      //   throw response;
+      // }
+      return 'Test';
+    } catch (e) {
       rethrow;
     }
   }

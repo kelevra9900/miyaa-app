@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../common/network/custom_catch_error.dart';
 import '../../../../common/user_preferences.dart';
+import '../../../init/presentation/splash_screen/utils/init_utils.dart';
 import '../../dashboard/dashboard_controller.dart';
 import 'home_controller.dart';
 import 'screens/home_screen.dart';
@@ -25,6 +26,7 @@ class _HomeState extends ConsumerState<HomePage> {
 
   Future<void> initData() async {
     prefs.currentScreenDashboard = 0;
+    await initUtils.requestNotificationPermissions(context);
 
     if (ref.watch(homeController).refreshData) {
       try {

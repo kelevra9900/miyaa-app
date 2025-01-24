@@ -1,12 +1,12 @@
 import '../../../login/domain/user.dart';
 
-class ChatListModel {
+class Conversations {
   int? id;
   User? user;
 
-  ChatListModel({this.id, this.user});
+  Conversations({this.id, this.user});
 
-  ChatListModel.fromJson(Map<String, dynamic> json) {
+  Conversations.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     user = json['user'] != null ? User.fromJson(json['user']) : null;
   }

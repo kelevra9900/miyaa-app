@@ -74,6 +74,14 @@ class UserPreferences {
   set currentScreenDashboard(int value) {
     _prefs.setInt('currentScreenDashboard', value);
   }
+
+  String get fcmToken {
+    return _prefs.getString('fcmToken') ?? "";
+  }
+
+  set fcmToken(String value) {
+    _prefs.setString('fcmToken', value);
+  }
 }
 
 final UserPreferences prefs = UserPreferences();

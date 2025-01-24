@@ -37,14 +37,15 @@ class CustomHeaderChat extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 ArrowButton(
-                    height: 40.sp,
-                    backgroundColor:
-                        prefs.isDarkMode ? darkColors.containerColor : null,
-                    iconColor: Colors.white,
-                    onTap: () {
-                      controller.disconnect();
-                      context.pop();
-                    }),
+                  height: 40.sp,
+                  backgroundColor:
+                      prefs.isDarkMode ? darkColors.containerColor : null,
+                  iconColor: Colors.white,
+                  onTap: () {
+                    context.pop();
+                    controller.goBackToChats();
+                  },
+                ),
                 SizedBox(width: 16.sp),
                 UserPhoto(
                   radius: 20.sp,
@@ -67,7 +68,7 @@ class CustomHeaderChat extends StatelessWidget {
                     SizedBox(
                       width: context.width(.38),
                       child: CustomText(
-                        "Doctor",
+                        "Usuario",
                         fontSize: 12,
                         textColor: prefs.isDarkMode
                             ? lightColors.grey0
